@@ -1,11 +1,11 @@
-FROM nginx:mainline-alpine
+FROM alpine:3.5
 
-MAINTAINER ngineered <support@ngineered.co.uk>
+MAINTAINER Andreas Krüger <ak@patientsky.com>
 
 ENV php_conf /etc/php7/php.ini
 ENV fpm_conf /etc/php7/php-fpm.d/www.conf
 
-RUN sed -i -e "s/v3.4/edge/" /etc/apk/repositories && apk update && \
+RUN apk update && \
     apk add --no-cache bash \
     openssh-client \
     wget \
@@ -67,6 +67,7 @@ RUN mkdir -p /etc/nginx/sites-available/ && \
 mkdir -p /etc/nginx/sites-enabled/ && \
 rm -Rf /var/www/* && \
 mkdir /var/www/html/
+
 ADD conf/nginx-site.conf /etc/nginx/sites-available/default.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
@@ -96,17 +97,15 @@ RUN sed -i \
     ln -s /etc/php7/php.ini /etc/php7/conf.d/php.ini && \
     find /etc/php7/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
 
+RUN echo "error_log=/dev/stdout" >> ${php_conf}
 
 # Add Scripts
 ADD scripts/start.sh /start.sh
-ADD scripts/pull /usr/bin/pull
-RUN chmod 755 /usr/bin/pull && chmod 755 /start.sh
+RUN chmod 755 /start.sh
 
 # copy in code
 ADD src/ /var/www/html/
 ADD errors/ /var/www/errors
-
-VOLUME /var/www/html
 
 EXPOSE 80
 
