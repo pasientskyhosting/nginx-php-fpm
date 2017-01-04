@@ -56,10 +56,6 @@ if [ -f /var/www/html/conf/nginx/nginx-site.conf ]; then
   cp /var/www/html/conf/nginx/nginx-site.conf /etc/nginx/sites-available/default.conf
 fi
 
-if [ -f /var/www/html/conf/nginx/nginx-site-ssl.conf ]; then
-  cp /var/www/html/conf/nginx/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
-fi
-
 # Display PHP error's or not
 if [[ "$ERRORS" != "1" ]] ; then
  echo php_flag[display_errors] = off >> /etc/php7/php-fpm.conf
