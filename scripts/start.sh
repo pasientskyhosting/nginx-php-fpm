@@ -19,6 +19,11 @@ else
  webroot=/var/www/html
 fi
 
+# Set custom server name
+if [ ! -z "$SERVERNAME" ]; then
+ sed -i "s#server_name _;#server_name $SERVERNAME;#g" /etc/nginx/sites-available/default.conf
+fi
+
 # Setup git variables
 if [ ! -z "$GIT_EMAIL" ]; then
  git config --global user.email "$GIT_EMAIL"
