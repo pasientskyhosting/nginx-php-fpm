@@ -5,7 +5,6 @@ MAINTAINER Andreas Krüger <ak@patientsky.com>
 ENV php_conf /etc/php/7.1/fpm/php.ini
 ENV fpm_conf /etc/php/7.1/fpm/pool.d/www.conf
 ENV DEBIAN_FRONTEND noninteractive
-ENV NEW_RELIC_LICENSE_KEY
 
 RUN apt-get update \
     && apt-get install -y -q --no-install-recommends \
@@ -139,8 +138,8 @@ RUN echo "opcache.enable=1" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.interned_strings_buffer=8" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.revalidate_freq=60" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini
 
-RUN export TERM=dumb && [[ -n ${NEW_RELIC_LICENSE_KEY} ]] && newrelic-install install
-RUN [[ -n ${NEW_RELIC_LICENSE_KEY} ]] && nrsysmond-config --set license_key=${NEW_RELIC_LICENSE_KEY}
+RUN [ -n "${NEW_RELIC_LICENSE_KEY}" ] && newrelic-install install || exit 0
+RUN [ -n "${NEW_RELIC_LICENSE_KEY}" ] && nrsysmond-config --set license_key=${NEW_RELIC_LICENSE_KEY} || exit 0
 
 # Add Scripts
 ADD scripts/start.sh /start.sh
