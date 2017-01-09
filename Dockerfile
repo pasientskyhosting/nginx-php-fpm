@@ -30,7 +30,6 @@ RUN echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/
     wget -O- https://download.newrelic.com/548C16BF.gpg | apt-key add - && \
     echo newrelic-php5 newrelic-php5/license-key string ${NEW_RELIC_LICENSE_KEY} | debconf-set-selections
 
-
 RUN apt-get update \
     && apt-get install -y -q --no-install-recommends \
     php7.1-cli \
@@ -148,7 +147,7 @@ ADD scripts/start.sh /start.sh
 RUN chmod 755 /start.sh
 
 # copy in code and errors
-ADD src/ /var/www/html/
+# ADD src/ /var/www/html/
 ADD errors/ /var/www/errors
 
 EXPOSE 80
