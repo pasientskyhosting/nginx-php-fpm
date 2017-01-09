@@ -61,7 +61,8 @@ fi
 # Always chown webroot for better mounting
 chown -Rf nginx.nginx /var/www/html
 
-if [ -z "$NEW_RELIC_LICENSE_KEY" ]
+# Add new relic if key is present
+if [ -n "$NEW_RELIC_LICENSE_KEY" ]; then
 cat >> /etc/supervisord.conf < EOF
 [program:nrsysmond]
 command=nrsysmond -c /etc/newrelic/nrsysmond.cfg -l /dev/stdout -f
@@ -75,6 +76,7 @@ stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stderr
 stderr_logfile_maxbytes=0
 EOF
+fi
 
 
 # Start supervisord and services
