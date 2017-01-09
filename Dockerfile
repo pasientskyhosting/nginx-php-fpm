@@ -49,14 +49,14 @@ RUN apt-get update \
     php7.1-xml \
     php7.1-zip \
     php-igbinary \
-    newrelic-php5 \
-    newrelic-sysmond \
     nginx \
     supervisor \
     openssh-client \
     git \
     && apt-get clean \
     && rm -r /var/lib/apt/lists/*
+
+RUN [ -n "${NEW_RELIC_LICENSE_KEY}" ] && apt-get install -y -q --no-install-recommends newrelic-php5 newrelic-sysmond && apt-get clean && rm -r /var/lib/apt/lists/* || exit 0
 
 RUN mkdir -p /etc/nginx && \
     mkdir -p /var/www/app && \
