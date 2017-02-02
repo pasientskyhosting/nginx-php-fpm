@@ -69,7 +69,7 @@ ADD conf/supervisord.conf /etc/supervisord.conf
 RUN rm -Rf /etc/nginx/nginx.conf
 ADD conf/nginx.conf /etc/nginx/nginx.conf
 
-RUN useradd -ms /bin/bash nginx
+# RUN useradd -ms /bin/bash nginx
 
 # nginx site conf
 RUN mkdir -p /etc/nginx/sites-available/ && \
