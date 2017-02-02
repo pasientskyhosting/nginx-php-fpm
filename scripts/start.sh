@@ -88,7 +88,7 @@ then
 fi
 
 # Always chown webroot for better mounting
-chown -Rf nginx:nginx /var/www/html
+chown -R nginx:nginx /var/www/html
 
 # Add new relic if key is present
 if [ -n "$NEW_RELIC_LICENSE_KEY" ]; then
