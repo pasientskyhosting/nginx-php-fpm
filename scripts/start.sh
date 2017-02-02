@@ -58,6 +58,24 @@ if [ ! -d "/var/www/html/.git" ]; then
  fi
 fi
 
+# Lets get the parameters configs
+echo "Getting parameters"
+
+if [ -d /parameters ];
+then
+    rm -rf /parameters
+fi
+mkdir -p /parameters
+cd /parameters
+git archive --remote=git@bitbucket.org:krugercorp/production-server-config.git master customers/roles/pltest-app/files/parameters/ | tar xvf -
+mv /parameterscustomers/roles/pltest-app/files/parameters/*.yml /parameters/
+
+if [ -f /parameters/${CONSUL_APPLICATION}.yml ];
+then
+    echo "Found parameters file for ${CONSUL_APPLICATION}"
+    cp /parameters/${CONSUL_APPLICATION}.yml /var/www/html/app/config/parameters.yml
+fi
+
 # Always chown webroot for better mounting
 chown -Rf nginx.nginx /var/www/html
 
