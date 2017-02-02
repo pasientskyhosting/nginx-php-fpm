@@ -82,7 +82,7 @@ then
     chown -Rf nginx:nginx /var/www/html
 
     cd /var/www/html
-    sudo -u nginx /usr/bin/composer install --no-interaction --no-dev --optimize-autoloader
+    /usr/bin/composer install --no-interaction --no-dev --optimize-autoloader
 
     # cache warmup
     #sudo -u nginx php app/console cache:clear --env=prod
