@@ -68,7 +68,7 @@ fi
 mkdir -p /parameters
 cd /parameters
 git archive --remote=git@bitbucket.org:krugercorp/production-server-config.git master customers/roles/pltest-app/files/parameters/ | tar xvf -
-mv /parameterscustomers/roles/pltest-app/files/parameters/*.yml /parameters/
+mv /parameters/customers/roles/pltest-app/files/parameters/*.yml /parameters/
 
 if [ -f /parameters/${CONSUL_APPLICATION}.yml ];
 then
@@ -78,6 +78,10 @@ fi
 
 # Always chown webroot for better mounting
 chown -Rf nginx.nginx /var/www/html
+
+# Consider to do cache warm-up
+#cd /var/www/html
+#sudo -u nginx php app/console cache:clear --env=prod
 
 # Add new relic if key is present
 if [ -n "$NEW_RELIC_LICENSE_KEY" ]; then
