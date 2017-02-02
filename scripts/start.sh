@@ -54,7 +54,7 @@ if [ ! -d "/var/www/html/.git" ]; then
        git clone https://${GIT_USERNAME}:${GIT_PERSONAL_TOKEN}@${GIT_REPO} /var/www/html || exit 1
      fi
    fi
-   chown -Rf nginx.nginx /var/www/html
+   chown -Rf nginx:nginx /var/www/html
  fi
 fi
 
@@ -78,14 +78,18 @@ then
         echo "Found parameters file for ${PARAMETERS_FILE}"
         cp /parameters/${PARAMETERS_FILE} /var/www/html/app/config/parameters.yml
     fi
+    # Always chown webroot for better mounting
+    chown -Rf nginx:nginx /var/www/html
+
+    cd /var/www/html
+    sudo -u nginx /usr/bin/composer install --no-interaction --no-dev --optimize-autoloader
+
+    # cache warmup
+    #sudo -u nginx php app/console cache:clear --env=prod
 fi
 
 # Always chown webroot for better mounting
-chown -Rf nginx.nginx /var/www/html
-
-# Consider to do cache warm-up
-#cd /var/www/html
-#sudo -u nginx php app/console cache:clear --env=prod
+chown -Rf nginx:nginx /var/www/html
 
 # Add new relic if key is present
 if [ -n "$NEW_RELIC_LICENSE_KEY" ]; then

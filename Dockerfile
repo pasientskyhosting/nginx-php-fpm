@@ -5,6 +5,7 @@ MAINTAINER Andreas Krüger <ak@patientsky.com>
 ENV php_conf /etc/php/7.1/fpm/php.ini
 ENV fpm_conf /etc/php/7.1/fpm/pool.d/www.conf
 ENV DEBIAN_FRONTEND noninteractive
+ENV composer_hash 55d6ead61b29c7bdee5cccfb50076874187bd9f21f65d8991d46ec5cc90518f447387fb9f76ebae1fbbacf329e583e30
 
 RUN apt-get update \
     && apt-get install -y -q --no-install-recommends \
@@ -112,7 +113,6 @@ RUN sed -i \
         -e "s/;pm.max_requests = 500/pm.max_requests = 200/g" \
         -e "s/user = www-data/user = nginx/g" \
         -e "s/group = www-data/group = nginx/g" \
-        -e "s/;listen.mode = 0660/listen.mode = 0666/g" \
         -e "s/;listen.owner = www-data/listen.owner = nginx/g" \
         -e "s/;listen.group = www-data/listen.group = nginx/g" \
         -e "s/listen = \/run\/php\/php7.1-fpm.sock/listen = \/var\/run\/php-fpm.sock/g" \
@@ -148,6 +148,11 @@ RUN chmod 755 /start.sh
 # copy in code and errors
 # ADD src/ /var/www/html/
 ADD errors/ /var/www/errors
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    php -r "if (hash_file('SHA384', 'composer-setup.php') === '${composer_hash}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+    php composer-setup.php --install-dir=/usr/bin --filename=composer && \
+    php -r "unlink('composer-setup.php');"
 
 EXPOSE 80
 
