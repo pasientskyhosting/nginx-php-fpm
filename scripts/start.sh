@@ -58,9 +58,12 @@ if [ ! -d "/var/www/html/.git" ]; then
 fi
 
 # Composer
-cd /var/www/html
-/usr/bin/composer install --no-interaction --no-dev --optimize-autoloader
-php app/console cache:clear --env=prod
+if [ -f /var/www/html/composer.json ];
+then
+    cd /var/www/html
+    /usr/bin/composer install --no-interaction --no-dev --optimize-autoloader
+    php app/console cache:clear --env=prod
+fi
 
 # Always chown webroot for better mounting
 chown -R nginx:nginx /var/www/html
