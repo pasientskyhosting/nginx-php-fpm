@@ -57,36 +57,6 @@ if [ ! -d "/var/www/html/.git" ]; then
  fi
 fi
 
-# Lets get the parameters configs
-if [ "${PARAMETERS_FILE}" != "" ];
-then
-    echo "Getting parameters"
-
-    if [ -d /parameters ];
-    then
-        rm -rf /parameters
-    fi
-
-    mkdir -p /parameters
-    cd /parameters
-    git archive --remote=git@bitbucket.org:krugercorp/production-server-config.git master customers/roles/pltest-app/files/parameters/ | tar xvf -
-    mv /parameters/customers/roles/pltest-app/files/parameters/*.yml /parameters/
-
-    if [ -f /parameters/${PARAMETERS_FILE} ];
-    then
-        echo "Found parameters file for ${PARAMETERS_FILE}"
-        cp /parameters/${PARAMETERS_FILE} /var/www/html/app/config/parameters.yml
-    fi
-
-    #/root/composer.phar config -g github-oauth.github.com xxxx
-
-    cd /var/www/html
-    /usr/bin/composer install --no-interaction --no-dev --optimize-autoloader
-
-    # cache warmup
-    php app/console cache:clear --env=prod
-fi
-
 # Always chown webroot for better mounting
 chown -R nginx:nginx /var/www/html
 
