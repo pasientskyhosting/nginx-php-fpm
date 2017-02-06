@@ -53,6 +53,7 @@ RUN apt-get update \
     nginx \
     supervisor \
     openssh-client \
+    unzip \
     git \
     && apt-get clean \
     && rm -r /var/lib/apt/lists/*
@@ -153,6 +154,15 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php -r "if (hash_file('SHA384', 'composer-setup.php') === '${composer_hash}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     php composer-setup.php --install-dir=/usr/bin --filename=composer && \
     php -r "unlink('composer-setup.php');"
+
+#ADD https://releases.hashicorp.com/consul-template/0.18.0/consul-template_0.18.0_SHA256SUMS /tmp/
+#ADD https://releases.hashicorp.com/consul-template/0.18.0/consul-template_0.18.0_linux_amd64.zip /tmp/
+
+#RUN cd /tmp && \
+#    sha256sum -c consul-template_0.18.0_SHA256SUMS 2>&1 | grep OK && \
+#    unzip consul-template_0.18.0_linux_amd64.zip && \
+#    mv consul-template /bin/consul-template && \
+#    rm -rf /tmp/*
 
 EXPOSE 80
 
