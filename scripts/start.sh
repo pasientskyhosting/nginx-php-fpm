@@ -60,6 +60,18 @@ fi
 # Composer
 if [ -f /var/www/html/composer.json ];
 then
+
+cat > /var/www/html/app/config/config_prod.yml <<EOF
+imports:
+    - { resource: config.yml }
+monolog:
+    handlers:
+        main:
+            type: stream
+            path:  "/dev/stdout"
+            level: error
+EOF
+
     cd /var/www/html
     /usr/bin/composer install --no-interaction --no-dev --optimize-autoloader
     php app/console cache:clear --env=prod

@@ -50,6 +50,7 @@ RUN apt-get update \
     php7.1-xml \
     php7.1-zip \
     php-igbinary \
+    php-amqp \
     nginx \
     supervisor \
     openssh-client \
