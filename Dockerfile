@@ -27,8 +27,7 @@ RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
     echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
 
 RUN echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/sources.list.d/newrelic.list && \
-    wget -O- https://download.newrelic.com/548C16BF.gpg | apt-key add - && \
-    echo newrelic-php5 newrelic-php5/license-key string ${NEW_RELIC_LICENSE_KEY} | debconf-set-selections
+    wget -O- https://download.newrelic.com/548C16BF.gpg | apt-key add -
 
 RUN apt-get update \
     && apt-get install -y -q --no-install-recommends \
@@ -55,11 +54,11 @@ RUN apt-get update \
     supervisor \
     openssh-client \
     unzip \
+    newrelic-php5 \
+    newrelic-sysmond \
     git \
     && apt-get clean \
     && rm -r /var/lib/apt/lists/*
-
-RUN [ -n "${NEW_RELIC_LICENSE_KEY}" ] && apt-get install -y -q --no-install-recommends newrelic-php5 newrelic-sysmond && apt-get clean && rm -r /var/lib/apt/lists/* || exit 0
 
 RUN mkdir -p /etc/nginx && \
     mkdir -p /var/www/app && \
@@ -139,9 +138,6 @@ RUN echo "opcache.enable=1" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.memory_consumption=1024" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.interned_strings_buffer=8" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.revalidate_freq=60" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini
-
-RUN [ -n "${NEW_RELIC_LICENSE_KEY}" ] && newrelic-install install || exit 0
-RUN [ -n "${NEW_RELIC_LICENSE_KEY}" ] && nrsysmond-config --set license_key=${NEW_RELIC_LICENSE_KEY} || exit 0
 
 # Add Scripts
 ADD scripts/start.sh /start.sh
