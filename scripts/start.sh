@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Create a log pipe so non root can write to stdout
+mkfifo -m 600 /tmp/logpipe
+cat <> /tmp/logpipe 1>&2 &
+
 # Disable Strict Host checking for non interactive git clones
 mkdir -p -m 0700 /root/.ssh
 echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config

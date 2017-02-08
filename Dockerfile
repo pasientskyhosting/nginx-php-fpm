@@ -161,9 +161,6 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
 #    mv consul-template /bin/consul-template && \
 #    rm -rf /tmp/*
 
-RUN mkfifo -m 600 /tmp/logpipe &6 \
-    cat <> /tmp/logpipe 1>&2 &
-
 EXPOSE 80
 
 CMD ["/start.sh"]
