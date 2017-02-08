@@ -68,7 +68,7 @@ monolog:
     handlers:
         main:
             type: stream
-            path:  "/dev/stdout"
+            path:  "/tmp/logpipe"
             level: error
 EOF
 

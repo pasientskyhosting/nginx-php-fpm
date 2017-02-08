@@ -90,7 +90,7 @@ RUN sed -i \
         -e "s/upload_max_filesize\s*=\s*2M/upload_max_filesize = 100M/g" \
         -e "s/post_max_size\s*=\s*8M/post_max_size = 100M/g" \
         -e "s/variables_order = \"GPCS\"/variables_order = \"EGPCS\"/g" \
-        -e "s/;error_log\s*=\s*syslog/error_log = \/dev\/stderr/g" \
+        -e "s/;error_log\s*=\s*syslog/error_log = \/tmp\/logpipe/g" \
         -e "s/memory_limit\s*=\s*128M/memory_limit = 3072M/g" \
         -e "s/;date.timezone\s*=/date.timezone = Europe\/Oslo/g" \
         -e "s/max_execution_time\s*=\s*30/max_execution_time = 300/g" \
@@ -102,7 +102,7 @@ RUN sed -i \
         -e "s/;emergency_restart_threshold\s*=\s*0/emergency_restart_threshold = 3/g" \
         -e "s/;emergency_restart_interval\s*=\s*0/emergency_restart_interval = 1m/g" \
         -e "s/;process_control_timeout\s*=\s*0/process_control_timeout = 5s/g" \
-        -e "s/error_log\s*=\s*\/var\/log\/php7.1-fpm.log/error_log = \/dev\/stderr/g" \
+        -e "s/error_log\s*=\s*\/var\/log\/php7.1-fpm.log/error_log = \/tmp\/logpipe/g" \
         /etc/php/7.1/fpm/php-fpm.conf && \
     sed -i \
         -e "s/;daemonize\s*=\s*yes/daemonize = no/g" \
@@ -160,6 +160,9 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
 #    unzip consul-template_0.18.0_linux_amd64.zip && \
 #    mv consul-template /bin/consul-template && \
 #    rm -rf /tmp/*
+
+RUN mkfifo -m 600 /tmp/logpipe &6 \
+    cat <> /tmp/logpipe 1>&2 &
 
 EXPOSE 80
 
