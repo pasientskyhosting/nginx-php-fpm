@@ -120,8 +120,6 @@ RUN sed -i \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
 
-RUN
-
 # Cleanup some files and remove comments
 RUN find /etc/php/7.1/fpm/conf.d -name "*.ini" -exec sed -i -re '/^[[:blank:]]*(\/\/|#|;)/d;s/#.*//' {} \; && \
     find /etc/php/7.1/fpm/conf.d -name "*.ini" -exec sed -i -re '/^$/d' {} \; && \
