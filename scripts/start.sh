@@ -2,7 +2,7 @@
 
 # Create a log pipe so non root can write to stdout
 mkfifo -m 600 /tmp/logpipe
-cat < /tmp/logpipe 1>&2 &
+cat <> /tmp/logpipe 1>&2 &
 chown -R nginx:nginx /tmp/logpipe
 
 # Disable Strict Host checking for non interactive git clones
