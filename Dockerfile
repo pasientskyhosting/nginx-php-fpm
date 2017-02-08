@@ -120,6 +120,8 @@ RUN sed -i \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
 
+RUN
+
 # Cleanup some files and remove comments
 RUN find /etc/php/7.1/fpm/conf.d -name "*.ini" -exec sed -i -re '/^[[:blank:]]*(\/\/|#|;)/d;s/#.*//' {} \; && \
     find /etc/php/7.1/fpm/conf.d -name "*.ini" -exec sed -i -re '/^$/d' {} \; && \
@@ -146,6 +148,9 @@ RUN chmod 755 /start.sh
 # copy in code and errors
 # ADD src/ /var/www/html/
 ADD errors/ /var/www/errors
+
+# Overwrite fastcgi_params
+ADD conf/fastcgi_params /etc/nginx/fastcgi_params
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php -r "if (hash_file('SHA384', 'composer-setup.php') === '${composer_hash}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
