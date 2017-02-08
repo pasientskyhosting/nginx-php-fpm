@@ -149,9 +149,6 @@ RUN chmod 755 /start.sh
 # ADD src/ /var/www/html/
 ADD errors/ /var/www/errors
 
-# Overwrite fastcgi_params
-ADD conf/fastcgi_params /etc/nginx/fastcgi_params
-
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php -r "if (hash_file('SHA384', 'composer-setup.php') === '${composer_hash}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     php composer-setup.php --install-dir=/usr/bin --filename=composer && \
