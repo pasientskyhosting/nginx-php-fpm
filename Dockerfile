@@ -1,4 +1,4 @@
-FROM debian:stretch-slim
+FROM debian:jessie-slim
 
 MAINTAINER Andreas Krüger <ak@patientsky.com>
 
@@ -13,7 +13,6 @@ RUN apt-get update \
     lsb-release \
     wget \
     vim \
-    curl \
     host \
     apt-utils \
     ca-certificates
