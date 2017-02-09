@@ -1,4 +1,4 @@
-FROM debian:jessie-slim
+FROM debian:stretch-slim
 
 MAINTAINER Andreas Krüger <ak@patientsky.com>
 
@@ -12,6 +12,9 @@ RUN apt-get update \
     apt-transport-https \
     lsb-release \
     wget \
+    vim \
+    curl \
+    host \
     apt-utils \
     ca-certificates
 
@@ -116,6 +119,8 @@ RUN sed -i \
         -e "s/group = www-data/group = nginx/g" \
         -e "s/;listen.owner = www-data/listen.owner = nginx/g" \
         -e "s/;listen.group = www-data/listen.group = nginx/g" \
+        -e "s/listen.owner = www-data/listen.owner = nginx/g" \
+        -e "s/listen.group = www-data/listen.group = nginx/g" \
         -e "s/listen = \/run\/php\/php7.1-fpm.sock/listen = \/var\/run\/php-fpm.sock/g" \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
