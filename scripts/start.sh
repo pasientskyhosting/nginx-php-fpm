@@ -84,7 +84,7 @@ if [ ! -d "/var/www/html/.git" ]; then
 fi
 
 if [ -f /var/www/html/app/config/parameters.yml.dist ]; then
-    echo "k8s_build_id: $PS_BUILD_ID" >> /var/www/html/app/config/parameters.yml.dist
+    echo -e "\tk8s_build_id: $PS_BUILD_ID" >> /var/www/html/app/config/parameters.yml.dist
 fi
 
 # Composer
