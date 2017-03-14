@@ -83,10 +83,6 @@ if [ ! -d "/var/www/html/.git" ]; then
     fi
 fi
 
-if [ -f /var/www/html/app/config/parameters.yml ]; then
-    sed -i "s/{{build_id}}/$PS_BUILD_ID/" /var/www/html/app/config/parameters.yml
-fi
-
 # Composer
 if [ -f /var/www/html/composer.json ]; then
 
@@ -103,6 +99,11 @@ EOF
 
     cd /var/www/html
     /usr/bin/composer install --no-interaction --no-dev --optimize-autoloader
+
+    if [ -f /var/www/html/app/config/parameters.yml ]; then
+        sed -i "s/{{build_id}}/$PS_BUILD_ID/" /var/www/html/app/config/parameters.yml
+    fi
+
     php app/console cache:clear --env=prod
 fi
 
