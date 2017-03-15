@@ -83,6 +83,14 @@ if [ ! -d "/var/www/html/.git" ]; then
     fi
 fi
 
+if [ -d "/adaptions" ]; then
+    # make scripts executable incase they aren't
+    chmod -Rf 750 /adaptions/*
+
+    # run scripts in number order
+    for i in `ls /adaptions/`; do /adaptions/$i ; done
+fi
+
 if [ -f /var/www/html/app/config/parameters.yml.dist ]; then
     echo "    k8s_build_id: $PS_BUILD_ID" >> /var/www/html/app/config/parameters.yml.dist
 fi
