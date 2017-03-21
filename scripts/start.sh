@@ -97,6 +97,7 @@ fi
 
 # Composer
 if [ -f /var/www/html/composer.json ]; then
+
 cat > /var/www/html/app/config/config_prod.yml <<EOF
 imports:
     - { resource: config.yml }
@@ -108,18 +109,8 @@ monolog:
             level: error
 EOF
 
-
-    if [ ! -z "$CONSUL_ENVIRONMENT" ]; then
-cat > /var/www/html/app/config/parameters.yml <<EOF
-parameters:
-    consul_uri: https://$CONSUL_USERNAME:$CONSUL_PASSWORD@$CONSUL_URL
-    consul_sections: ['$CONSUL_ENVIRONMENT/common', '$CONSUL_ENVIRONMENT/$CONSUL_APPLICATION']
-EOF
-    fi
-
     cd /var/www/html
-    mkdir -p /var/www/html/var
-    /usr/bin/composer run-script build-parameters
+    /usr/bin/composer install --no-interaction --no-dev --optimize-autoloader
 fi
 
 # Always chown webroot for better mounting
