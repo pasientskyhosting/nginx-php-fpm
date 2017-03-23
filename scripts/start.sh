@@ -114,7 +114,7 @@ EOF
 cat > /var/www/html/app/config/parameters.yml <<EOF
 parameters:
     consul_uri: https://$CONSUL_USERNAME:$CONSUL_PASSWORD@$CONSUL_URL
-    consul_sections: ['parameters/$CONSUL_ENVIRONMENT/common.yml', 'parameters/$CONSUL_ENVIRONMENT/$CONSUL_APPLICATION.yml']
+    consul_sections: ['parameters/$PS_ENVIRONMENT/common.yml', 'parameters/$CONSUL_ENVIRONMENT/$PS_APPLICATION.yml']
 EOF
     fi
 
