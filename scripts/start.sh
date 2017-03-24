@@ -129,8 +129,8 @@ fi
 chown -R nginx:nginx /var/www/html
 
 # Unset env to hide it from PHP
-while read var; do unset $var; done < <(env | grep -i PS_ | cut -d "=" -f 1)
-while read var; do unset $var; done < <(env | grep -i NEW_RELIC_ | cut -d "=" -f 1)
+#while read var; do unset $var; done < <(env | grep -i PS_ | cut -d "=" -f 1)
+#while read var; do unset $var; done < <(env | grep -i NEW_RELIC_ | cut -d "=" -f 1)
 
 # Start supervisord and services
 /usr/bin/supervisord -n -c /etc/supervisord.conf
