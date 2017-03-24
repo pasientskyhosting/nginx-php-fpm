@@ -109,11 +109,14 @@ monolog:
             level: error
 EOF
 
-
     if [ ! -z "$PS_ENVIRONMENT" ]; then
+    
+    PROTOCOL=$(echo "$PS_CONSUL_URL" | awk -F "//" '{print $1}')
+    PATH=$(echo "$PS_CONSUL_URL" | awk -F "//" '{print $2}')
+    
 cat > /var/www/html/app/config/parameters.yml <<EOF
 parameters:
-    consul_uri: $PS_CONSUL_FULL_URL
+    consul_uri: $PROTOCOL//$PS_CONSUL_USERNAME:PS_CONSUL_PASSWORD@$PATH
     consul_sections: ['parameters/$PS_ENVIRONMENT/common.yml', 'parameters/$PS_ENVIRONMENT/$PS_APPLICATION.yml']
 EOF
     fi
