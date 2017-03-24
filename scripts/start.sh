@@ -110,7 +110,7 @@ monolog:
 EOF
 
 
-    if [ ! -z "$CONSUL_ENVIRONMENT" ]; then
+    if [ ! -z "$PS_ENVIRONMENT" ]; then
 cat > /var/www/html/app/config/parameters.yml <<EOF
 parameters:
     consul_uri: https://$CONSUL_USERNAME:$CONSUL_PASSWORD@$CONSUL_URL
@@ -120,7 +120,7 @@ EOF
 
     cd /var/www/html
     mkdir -p /var/www/html/var
-    /usr/bin/composer run-script build-parameters
+    /usr/bin/composer run-script build-parameters --no-interaction
 fi
 
 # Always chown webroot for better mounting
