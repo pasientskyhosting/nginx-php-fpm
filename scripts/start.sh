@@ -113,7 +113,7 @@ EOF
     if [ ! -z "$PS_ENVIRONMENT" ]; then
 cat > /var/www/html/app/config/parameters.yml <<EOF
 parameters:
-    consul_uri: https://$CONSUL_USERNAME:$CONSUL_PASSWORD@$CONSUL_URL
+    consul_uri: $PS_CONSUL_FULL_URL
     consul_sections: ['parameters/$PS_ENVIRONMENT/common.yml', 'parameters/$PS_ENVIRONMENT/$PS_APPLICATION.yml']
 EOF
     fi
