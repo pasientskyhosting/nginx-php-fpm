@@ -5,8 +5,6 @@ mkfifo -m 600 /tmp/logpipe
 cat <> /tmp/logpipe 1>&2 &
 chown -R nginx:nginx /tmp/logpipe
 
-while read var; do unset $var; done < <(env | grep -i PS_
-
 # Disable Strict Host checking for non interactive git clones
 mkdir -p -m 0700 /root/.ssh
 echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
@@ -116,25 +114,21 @@ monolog:
 EOF
 
 
-    if [ ! -z "$CONSUL_ENVIRONMENT" ]; then
+    if [ ! -z "$PS_ENVIRONMENT" ]; then
 cat > /var/www/html/app/config/parameters.yml <<EOF
 parameters:
-    consul_uri: https://$CONSUL_USERNAME:$CONSUL_PASSWORD@$CONSUL_URL
-    consul_sections: ['$CONSUL_ENVIRONMENT/common', '$CONSUL_ENVIRONMENT/$CONSUL_APPLICATION']
+    consul_uri: $PS_CONSUL_FULL_URL
+    consul_sections: ['parameters/$PS_ENVIRONMENT/common.yml', 'parameters/$PS_ENVIRONMENT/$PS_APPLICATION.yml']
 EOF
     fi
 
     cd /var/www/html
     mkdir -p /var/www/html/var
-    /usr/bin/composer run-script build-parameters
+    /usr/bin/composer run-script build-parameters --no-interaction
 fi
 
 # Always chown webroot for better mounting
 chown -R nginx:nginx /var/www/html
-
-# Unset env to hide it from PHP
-#while read var; do unset $var; done < <(env | grep -i PS_ | cut -d "=" -f 1)
-#while read var; do unset $var; done < <(env | grep -i NEW_RELIC_ | cut -d "=" -f 1)
 
 # Start supervisord and services
 /usr/bin/supervisord -n -c /etc/supervisord.conf
