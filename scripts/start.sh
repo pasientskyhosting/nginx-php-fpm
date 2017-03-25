@@ -119,6 +119,12 @@ cat > /var/www/html/app/config/parameters.yml <<EOF
 parameters:
     consul_uri: $PS_CONSUL_FULL_URL
     consul_sections: ['parameters/$PS_ENVIRONMENT/common.yml', 'parameters/$PS_ENVIRONMENT/$PS_APPLICATION.yml']
+    env(PS_ENVIRONMENT): $PS_ENVIRONMENT
+    env(PS_APPLICATION): $PS_APPLICATION
+    env(PS_BUILD_ID): $PS_BUILD_ID
+    env(PS_BUILD_NR): $PS_BUILD_NR
+    env(PS_BASE_HOST): $PS_BASE_HOST
+    env(NEW_RELIC_API_URL): $NEW_RELIC_API_URL
 EOF
     fi
 
