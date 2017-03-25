@@ -152,13 +152,16 @@ RUN echo "opcache.enable=1" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
 
 # Add Scripts
 ADD scripts/start.sh /start.sh
-RUN chmod 755 /start.sh
+ADD scripts/setup.sh /setup.sh
+RUN chmod 755 /start.sh && \
+    chmod 755 /setup.sh
 
 # copy in code and errors
 # ADD src/ /var/www/html/
 ADD errors/ /var/www/errors
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+RUN composer_hash=$(wget -q -O - https://composer.github.io/installer.sig) && \
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php -r "if (hash_file('SHA384', 'composer-setup.php') === '${composer_hash}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     php composer-setup.php --install-dir=/usr/bin --filename=composer && \
     php -r "unlink('composer-setup.php');"
