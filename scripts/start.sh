@@ -26,6 +26,9 @@ if [ ! -z "$NEW_RELIC_LICENSE_KEY" ]; then
     sed -i "s|newrelic.appname = \"PHP Application\"|newrelic.appname = \"odn1-cluster1-$PS_ENVIRONMENT-$PS_APPLICATION\"|" /etc/php/7.1/fpm/conf.d/20-newrelic.ini
     sed -i "s|newrelic.appname = \"PHP Application\"|newrelic.appname = \"odn1-cluster1-$PS_ENVIRONMENT-$PS_APPLICATION\"|" /etc/php/7.1/cli/conf.d/20-newrelic.ini
 
+    sed -i "s|newrelic.appname = \"PHP Application\"|newrelic.appname = \"odn1-cluster1-$PS_ENVIRONMENT-$PS_APPLICATION\"|" /etc/php/7.1/fpm/conf.d/newrelic.ini
+    sed -i "s|newrelic.appname = \"PHP Application\"|newrelic.appname = \"odn1-cluster1-$PS_ENVIRONMENT-$PS_APPLICATION\"|" /etc/php/7.1/cli/conf.d/newrelic.ini
+
     unset NEW_RELIC_LICENSE_KEY
 else
     if [ -f /etc/php/7.1/fpm/conf.d/20-newrelic.ini ]; then
