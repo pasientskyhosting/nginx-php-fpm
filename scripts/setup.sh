@@ -96,7 +96,7 @@ if [ -d "/adaptions" ]; then
     chmod -Rf 750 /adaptions/*
 
     # run scripts in number order
-    for i in `ls /adaptions/`; do /adaptions/$i ; done
+    for i in `ls /adaptions/`; do /adaptions/$i || exit 1; done
 fi
 
 if [ -f /var/www/html/app/config/parameters.yml.dist ]; then
