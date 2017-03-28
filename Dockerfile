@@ -52,6 +52,9 @@ RUN apt-get update \
     php7.1-zip \
     php-igbinary \
     php-amqp \
+    libfontconfig1 \
+    libxrender1 \
+    ghostscript \
     nginx \
     supervisor \
     openssh-client \
