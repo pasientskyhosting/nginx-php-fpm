@@ -136,6 +136,7 @@ EOF
     fi
 
     cd /var/www/html
+    rm -rf /var/www/html/var
     mkdir -p /var/www/html/var
     /usr/bin/composer run-script build-parameters --no-interaction
 
