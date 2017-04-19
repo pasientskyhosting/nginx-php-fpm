@@ -147,4 +147,4 @@ EOF
 fi
 
 # Always chown webroot for better mounting
-chown -R nginx:nginx /var/www/html/var
+#chown -R nginx:nginx /var/www/html/var
