@@ -3,7 +3,7 @@
 # Create a log pipe so non root can write to stdout
 mkfifo -m 600 /tmp/logpipe
 cat <> /tmp/logpipe 1>&2 &
-chown -R nginx:nginx /tmp/logpipe
+#chown -R nginx:nginx /tmp/logpipe
 
 # Disable Strict Host checking for non interactive git clones
 mkdir -p -m 0700 /root/.ssh
@@ -145,6 +145,3 @@ EOF
         /var/www/html/bin/console cache:warmup --env=prod
     fi
 fi
-
-# Always chown webroot for better mounting
-#chown -R nginx:nginx /var/www/html/var
