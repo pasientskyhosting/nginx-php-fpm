@@ -99,12 +99,14 @@ if [ -d "/adaptions" ]; then
     for i in `ls /adaptions/`; do /adaptions/$i || exit 1; done
 fi
 
-if [ -f /var/www/html/app/config/parameters.yml.dist ]; then
-    echo "    k8s_build_id: $PS_BUILD_ID" >> /var/www/html/app/config/parameters.yml.dist
-fi
+if [ -z "$PRESERVE_PARAMS" ]; then
+    
+    if [ -f /var/www/html/app/config/parameters.yml.dist ]; then
+        echo "    k8s_build_id: $PS_BUILD_ID" >> /var/www/html/app/config/parameters.yml.dist
+    fi
 
-# Composer
-if [ -f /var/www/html/composer.json ]; then
+    # Composer
+    if [ -f /var/www/html/composer.json ]; then
 cat > /var/www/html/app/config/config_prod.yml <<EOF
 imports:
     - { resource: config.yml }
@@ -116,7 +118,7 @@ monolog:
             level: error
 EOF
 
-    if [ -z "$PRESERVE_PARAMS" ]; then
+    
 
         if [ ! -z "$PS_ENVIRONMENT" ]; then
 cat > /var/www/html/app/config/parameters.yml <<EOF
