@@ -119,12 +119,12 @@ RUN sed -i \
         -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 1/g" \
         -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 19/g" \
         -e "s/;pm.max_requests = 500/pm.max_requests = 200/g" \
-        -e "s/user = www-data/user = nginx/g" \
-        -e "s/group = www-data/group = nginx/g" \
-        -e "s/;listen.owner = www-data/listen.owner = nginx/g" \
-        -e "s/;listen.group = www-data/listen.group = nginx/g" \
-        -e "s/listen.owner = www-data/listen.owner = nginx/g" \
-        -e "s/listen.group = www-data/listen.group = nginx/g" \
+        -e "s/user = www-data/user = root/g" \
+        -e "s/group = www-data/group = root/g" \
+        -e "s/;listen.owner = www-data/listen.owner = root/g" \
+        -e "s/;listen.group = www-data/listen.group = root/g" \
+        -e "s/listen.owner = www-data/listen.owner = root/g" \
+        -e "s/listen.group = www-data/listen.group = root/g" \
         -e "s/listen = \/run\/php\/php7.1-fpm.sock/listen = \/var\/run\/php-fpm.sock/g" \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
