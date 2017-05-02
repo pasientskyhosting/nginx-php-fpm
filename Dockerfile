@@ -142,6 +142,8 @@ RUN find /etc/php/7.1/fpm/conf.d -name "*.ini" -exec sed -i -re '/^[[:blank:]]*(
 # Configure php opcode cache
 RUN echo "opcache.enable=1" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.enable_cli=1" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
+    echo "opcache.consistency_checks=0" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
+    echo "opcache.file_cache_consistency_checks=0" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
     echo "opcache.validate_timestamps=0" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.max_accelerated_files=1000000" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.memory_consumption=1024" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
