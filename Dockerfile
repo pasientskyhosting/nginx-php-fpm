@@ -53,6 +53,7 @@ RUN apt-get update \
     php-igbinary \
     php7.1-dev \
     librabbitmq-dev \
+    net-tools \
     make \
     php-pear \
     nginx \
