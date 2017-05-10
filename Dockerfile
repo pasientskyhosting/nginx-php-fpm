@@ -131,6 +131,9 @@ RUN sed -i \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
 
+RUN echo "pm.status_path = /status" >> ${fpm_conf} && \
+    echo "ping.path = /ping" >> ${fpm_conf}
+
 # Cleanup some files and remove comments
 RUN find /etc/php/7.1/fpm/conf.d -name "*.ini" -exec sed -i -re '/^[[:blank:]]*(\/\/|#|;)/d;s/#.*//' {} \; && \
     find /etc/php/7.1/fpm/conf.d -name "*.ini" -exec sed -i -re '/^$/d' {} \; && \
