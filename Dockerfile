@@ -54,6 +54,7 @@ RUN apt-get update \
     php-igbinary \
     php7.1-dev \
     librabbitmq-dev \
+    net-tools \
     make \
     php-pear \
     nginx \
@@ -120,12 +121,12 @@ RUN sed -i \
         -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 1/g" \
         -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 19/g" \
         -e "s/;pm.max_requests = 500/pm.max_requests = 200/g" \
-        -e "s/user = www-data/user = nginx/g" \
-        -e "s/group = www-data/group = nginx/g" \
-        -e "s/;listen.owner = www-data/listen.owner = nginx/g" \
-        -e "s/;listen.group = www-data/listen.group = nginx/g" \
-        -e "s/listen.owner = www-data/listen.owner = nginx/g" \
-        -e "s/listen.group = www-data/listen.group = nginx/g" \
+        -e "s/user = www-data/user = root/g" \
+        -e "s/group = www-data/group = root/g" \
+        -e "s/;listen.owner = www-data/listen.owner = root/g" \
+        -e "s/;listen.group = www-data/listen.group = root/g" \
+        -e "s/listen.owner = www-data/listen.owner = root/g" \
+        -e "s/listen.group = www-data/listen.group = root/g" \
         -e "s/listen = \/run\/php\/php7.1-fpm.sock/listen = \/var\/run\/php-fpm.sock/g" \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
@@ -143,11 +144,24 @@ RUN find /etc/php/7.1/fpm/conf.d -name "*.ini" -exec sed -i -re '/^[[:blank:]]*(
 # Configure php opcode cache
 RUN echo "opcache.enable=1" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.enable_cli=1" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
+    echo "opcache.consistency_checks=0" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
+    echo "opcache.file_cache=/var/tmp" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
+    echo "opcache.file_cache_consistency_checks=0" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.validate_timestamps=0" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.max_accelerated_files=1000000" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.memory_consumption=1024" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.interned_strings_buffer=8" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
     echo "opcache.revalidate_freq=60" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
+    echo "opcache.enable=1" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
+    echo "opcache.enable_cli=1" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
+    echo "opcache.consistency_checks=0" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
+    echo "opcache.file_cache_consistency_checks=0" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
+    echo "opcache.file_cache=/var/tmp" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
+    echo "opcache.validate_timestamps=0" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
+    echo "opcache.max_accelerated_files=1000000" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
+    echo "opcache.memory_consumption=1024" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
+    echo "opcache.interned_strings_buffer=8" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
+    echo "opcache.revalidate_freq=60" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
     echo "extension=amqp.so" >> /etc/php/7.1/fpm/php.ini && \
     echo "extension=amqp.so" >> /etc/php/7.1/cli/php.ini
 
