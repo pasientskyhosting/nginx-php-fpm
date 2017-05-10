@@ -14,6 +14,7 @@ RUN apt-get update \
     wget \
     vim \
     host \
+    tzdata \
     apt-utils \
     ca-certificates
 
