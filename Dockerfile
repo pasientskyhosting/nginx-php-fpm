@@ -64,6 +64,7 @@ RUN apt-get update \
     newrelic-php5 \
     newrelic-sysmond \
     git \
+    locales \
     && apt-get clean \
     && rm -r /var/lib/apt/lists/* \
     && yes '' | pecl install amqp
@@ -91,6 +92,10 @@ mkdir /var/www/html/
 
 ADD conf/nginx-site.conf /etc/nginx/sites-available/default.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
+
+RUN sed -i 's/# nb_NO.UTF-8 UTF-8/nb_NO.UTF-8 UTF-8/' /etc/locale.gen && \
+    ln -s /etc/locale.alias /usr/share/locale/locale.alias && \
+    locale-gen nb_NO.UTF-8
 
 # tweak php and php-fpm config
 RUN sed -i \
