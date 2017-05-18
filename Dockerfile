@@ -49,6 +49,7 @@ RUN apt-get update \
     php7.1-opcache \
     php7.1-mongodb \
     php7.1-mbstring \
+    php-redis \
     php7.1-xml \
     php7.1-zip \
     php-igbinary \
