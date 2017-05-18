@@ -133,7 +133,7 @@ RUN sed -i \
         -e "s/;listen.group = www-data/listen.group = root/g" \
         -e "s/listen.owner = www-data/listen.owner = root/g" \
         -e "s/listen.group = www-data/listen.group = root/g" \
-        -e "s/listen = \/run\/php\/php7.1-fpm.sock/listen = \/var\/run\/php-fpm.sock/g" \
+        -e "s/listen = \/run\/php\/php7.1-fpm.sock/listen = 127.0.0.1:9000/g" \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
 
