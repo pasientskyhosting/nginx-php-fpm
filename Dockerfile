@@ -121,7 +121,7 @@ RUN sed -i \
         -e "s/;daemonize\s*=\s*yes/daemonize = no/g" \
         -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" \
         -e "s/pm = dynamic/pm = static/g" \
-        -e "s/pm.max_children = 5/pm.max_children = 20/g" \
+        -e "s/pm.max_children = 5/pm.max_children = 50/g" \
         -e "s/pm.start_servers = 2/pm.start_servers = 20/g" \
         -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 1/g" \
         -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 19/g" \
@@ -138,6 +138,8 @@ RUN sed -i \
 
 RUN echo "pm.status_path = /status" >> ${fpm_conf} && \
     echo "catch_workers_output = yes" >> ${fpm_conf} && \
+    echo "rlimit_files = 131072" >> ${fpm_conf} && \
+    echo "rlimit_core = 0" >> ${fpm_conf} && \
     echo "ping.path = /ping" >> ${fpm_conf}
 
 # Cleanup some files and remove comments
