@@ -140,6 +140,7 @@ RUN echo "pm.status_path = /status" >> ${fpm_conf} && \
     echo "catch_workers_output = yes" >> ${fpm_conf} && \
     echo "rlimit_files = 131072" >> ${fpm_conf} && \
     echo "rlimit_core = 0" >> ${fpm_conf} && \
+    echo "pm.process_idle_timeout = 10s" >> ${fpm_conf} && \
     echo "ping.path = /ping" >> ${fpm_conf}
 
 # Cleanup some files and remove comments
