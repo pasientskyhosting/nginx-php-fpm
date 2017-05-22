@@ -102,7 +102,7 @@ if [ -d "/adaptions" ]; then
 fi
 
 if [ -z "$PRESERVE_PARAMS" ]; then
-    
+
     if [ -f /var/www/html/app/config/parameters.yml.dist ]; then
         echo "    k8s_build_id: $PS_BUILD_ID" >> /var/www/html/app/config/parameters.yml.dist
     fi
@@ -116,11 +116,11 @@ monolog:
     handlers:
         main:
             type: stream
-            path:  "/tmp/logpipe"
+            path:  "/dev/stdout"
             level: error
 EOF
 
-    
+
 
         if [ ! -z "$PS_ENVIRONMENT" ]; then
 cat > /var/www/html/app/config/parameters.yml <<EOF
