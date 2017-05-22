@@ -116,7 +116,7 @@ monolog:
     handlers:
         main:
             type: stream
-            path:  "/dev/stdout"
+            path:  "/proc/self/fd/2"
             level: error
 EOF
 
