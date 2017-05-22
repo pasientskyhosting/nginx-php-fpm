@@ -43,7 +43,6 @@ RUN apt-get update \
     php7.1-json \
     php7.1-mcrypt \
     php7.1-cli \
-    php7.1-apcu \
     php7.1-imagick \
     php7.1-intl \
     php7.1-opcache \
@@ -138,6 +137,7 @@ RUN sed -i \
         ${fpm_conf}
 
 RUN echo "pm.status_path = /status" >> ${fpm_conf} && \
+    echo "catch_workers_output = yes" >> ${fpm_conf} && \
     echo "ping.path = /ping" >> ${fpm_conf}
 
 # Cleanup some files and remove comments
