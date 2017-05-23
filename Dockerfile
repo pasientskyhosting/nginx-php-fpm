@@ -193,15 +193,6 @@ RUN composer_hash=$(wget -q -O - https://composer.github.io/installer.sig) && \
     php composer-setup.php --install-dir=/usr/bin --filename=composer && \
     php -r "unlink('composer-setup.php');"
 
-#ADD https://releases.hashicorp.com/consul-template/0.18.0/consul-template_0.18.0_SHA256SUMS /tmp/
-#ADD https://releases.hashicorp.com/consul-template/0.18.0/consul-template_0.18.0_linux_amd64.zip /tmp/
-
-#RUN cd /tmp && \
-#    sha256sum -c consul-template_0.18.0_SHA256SUMS 2>&1 | grep OK && \
-#    unzip consul-template_0.18.0_linux_amd64.zip && \
-#    mv consul-template /bin/consul-template && \
-#    rm -rf /tmp/*
-
 EXPOSE 80
 
 CMD ["/start.sh"]
