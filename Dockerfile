@@ -2,8 +2,6 @@ FROM debian:jessie-slim
 
 MAINTAINER Andreas Krüger <ak@patientsky.com>
 
-ENV php_conf /etc/php/7.1/fpm/php.ini
-ENV fpm_conf /etc/php/7.1/fpm/pool.d/www.conf
 ENV DEBIAN_FRONTEND noninteractive
 ENV composer_hash 669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410
 
@@ -59,134 +57,58 @@ RUN apt-get update \
     php-pear \
     nginx \
     supervisor \
-    openssh-client \
     unzip \
     newrelic-php5 \
     newrelic-sysmond \
-    git \
     locales \
+    && yes '' | pecl install amqp \
     && apt-get clean \
-    && rm -r /var/lib/apt/lists/* \
-    && yes '' | pecl install amqp
+    && rm -r /var/lib/apt/lists/*
 
-RUN mkdir -p /etc/nginx && \
-    mkdir -p /var/www/app && \
-    mkdir -p /run/nginx && \
-    mkdir -p /var/log/supervisor
-
-ADD conf/supervisord.conf /etc/supervisord.conf
-
-# Copy our nginx config
-RUN rm -Rf /etc/nginx/nginx.conf
-ADD conf/nginx.conf /etc/nginx/nginx.conf
-
-# RUN useradd -ms /bin/bash nginx
-
-# nginx site conf
-RUN mkdir -p /etc/nginx/sites-available/ && \
-mkdir -p /etc/nginx/sites-enabled/ && \
-rm -Rf /etc/nginx/sites-available/* && \
-rm -Rf /etc/nginx/sites-enabled/* && \
-rm -Rf /var/www/* && \
-mkdir /var/www/html/
-
-ADD conf/nginx-site.conf /etc/nginx/sites-available/default.conf
-RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
-
+# Install no locale
 RUN sed -i 's/# nb_NO.UTF-8 UTF-8/nb_NO.UTF-8 UTF-8/' /etc/locale.gen && \
     ln -s /etc/locale.alias /usr/share/locale/locale.alias && \
     locale-gen nb_NO.UTF-8
 
-# tweak php and php-fpm config
-RUN sed -i \
-        -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" \
-        -e "s/upload_max_filesize\s*=\s*2M/upload_max_filesize = 100M/g" \
-        -e "s/post_max_size\s*=\s*8M/post_max_size = 100M/g" \
-        -e "s/variables_order = \"GPCS\"/variables_order = \"EGPCS\"/g" \
-        -e "s/;error_log\s*=\s*syslog/error_log = \/proc\/self\/fd\/2/g" \
-        -e "s/memory_limit\s*=\s*128M/memory_limit = 3072M/g" \
-        -e "s/;date.timezone\s*=/date.timezone = Europe\/Oslo/g" \
-        -e "s/max_execution_time\s*=\s*30/max_execution_time = 300/g" \
-        -e "s/max_input_time\s*=\s*60/max_input_time = 300/g" \
-        -e "s/default_socket_timeout\s*=\s*60/default_socket_timeout = 300/g" \
-        ${php_conf} && \
-    sed -i \
-        -e "s/;events.mechanism\s*=\s*epoll/events.mechanism = epoll/g" \
-        -e "s/;emergency_restart_threshold\s*=\s*0/emergency_restart_threshold = 3/g" \
-        -e "s/;emergency_restart_interval\s*=\s*0/emergency_restart_interval = 1m/g" \
-        -e "s/;process_control_timeout\s*=\s*0/process_control_timeout = 5s/g" \
-        -e "s/error_log\s*=\s*\/var\/log\/php7.1-fpm.log/error_log = \/proc\/self\/fd\/2/g" \
-        /etc/php/7.1/fpm/php-fpm.conf && \
-    sed -i \
-        -e "s/;daemonize\s*=\s*yes/daemonize = no/g" \
-        -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" \
-        -e "s/pm = dynamic/pm = static/g" \
-        -e "s/pm.max_children = 5/pm.max_children = 50/g" \
-        -e "s/pm.start_servers = 2/pm.start_servers = 20/g" \
-        -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 1/g" \
-        -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 19/g" \
-        -e "s/;pm.max_requests = 500/pm.max_requests = 200/g" \
-        -e "s/user = www-data/user = root/g" \
-        -e "s/group = www-data/group = root/g" \
-        -e "s/;listen.owner = www-data/listen.owner = root/g" \
-        -e "s/;listen.group = www-data/listen.group = root/g" \
-        -e "s/listen.owner = www-data/listen.owner = root/g" \
-        -e "s/listen.group = www-data/listen.group = root/g" \
-        -e "s/listen = \/run\/php\/php7.1-fpm.sock/listen = 127.0.0.1:9000/g" \
-        -e "s/^;clear_env = no$/clear_env = no/" \
-        ${fpm_conf}
+RUN mkdir -p /etc/nginx && \
+    mkdir -p /var/www/app && \
+    mkdir -p /run/nginx && \
+    mkdir -p /var/log/supervisor && \
+    rm -Rf /etc/nginx/nginx.conf && \
+    mkdir -p /etc/nginx/sites-enabled/ && \
+    rm -Rf /etc/nginx/sites-enabled/* && \
+    rm -Rf /var/www/* && \
+    mkdir /var/www/html/
 
-RUN echo "pm.status_path = /status" >> ${fpm_conf} && \
-    echo "catch_workers_output = yes" >> ${fpm_conf} && \
-    echo "rlimit_files = 131072" >> ${fpm_conf} && \
-    echo "rlimit_core = 0" >> ${fpm_conf} && \
-    echo "pm.process_idle_timeout = 10s" >> ${fpm_conf} && \
-    echo "ping.path = /ping" >> ${fpm_conf}
+# Setup nginx and supervisord
+ADD conf/supervisord.conf /etc/supervisord.conf
+ADD conf/nginx.conf /etc/nginx/nginx.conf
+ADD conf/nginx-site.conf /etc/nginx/sites-enabled/default.conf
 
-# Cleanup some files and remove comments
-RUN find /etc/php/7.1/fpm/conf.d -name "*.ini" -exec sed -i -re '/^[[:blank:]]*(\/\/|#|;)/d;s/#.*//' {} \; && \
-    find /etc/php/7.1/fpm/conf.d -name "*.ini" -exec sed -i -re '/^$/d' {} \; && \
-    find /etc/php/7.1/fpm/pool.d -name "*.conf" -exec sed -i -re '/^[[:blank:]]*(\/\/|#|;)/d;s/#.*//' {} \; && \
-    find /etc/php/7.1/fpm/pool.d -name "*.conf" -exec sed -i -re '/^$/d' {} \; && \
-    find /etc/php/7.1/cli/conf.d -name "*.ini" -exec sed -i -re '/^[[:blank:]]*(\/\/|#|;)/d;s/#.*//' {} \; && \
-    find /etc/php/7.1/cli/conf.d -name "*.ini" -exec sed -i -re '/^$/d' {} \; && \
-    find /etc/php/7.1/fpm/ -name "*.conf" -exec sed -i -re '/^[[:blank:]]*(\/\/|#|;)/d;s/#.*//' {} \; && \
-    find /etc/php/7.1/fpm/ -name "*.conf" -exec sed -i -re '/^$/d' {} \;
+# tweak php-fpm
+ADD conf/php-fpm.conf /etc/php/7.1/fpm/php-fpm.conf
+ADD conf/www.conf /etc/php/7.1/fpm/pool.d/www.conf
+
+# tweak php
+ADD conf/php.ini /etc/php/7.1/fpm/conf.d/50-settings.ini
+ADD conf/php.ini /etc/php/7.1/cli/conf.d/50-settings.ini
 
 # Configure php opcode cache
-RUN echo "opcache.enable=1" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
-    echo "opcache.enable_cli=1" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
-    echo "opcache.consistency_checks=0" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
-    echo "opcache.file_cache=/var/tmp" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
-    echo "opcache.file_cache_consistency_checks=0" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
-    echo "opcache.validate_timestamps=0" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
-    echo "opcache.max_accelerated_files=1000000" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
-    echo "opcache.memory_consumption=1024" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
-    echo "opcache.interned_strings_buffer=8" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
-    echo "opcache.revalidate_freq=60" >> /etc/php/7.1/fpm/conf.d/10-opcache.ini && \
-    echo "opcache.enable=1" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
-    echo "opcache.enable_cli=1" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
-    echo "opcache.consistency_checks=0" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
-    echo "opcache.file_cache_consistency_checks=0" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
-    echo "opcache.file_cache=/var/tmp" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
-    echo "opcache.validate_timestamps=0" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
-    echo "opcache.max_accelerated_files=1000000" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
-    echo "opcache.memory_consumption=1024" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
-    echo "opcache.interned_strings_buffer=8" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
-    echo "opcache.revalidate_freq=60" >> /etc/php/7.1/cli/conf.d/10-opcache.ini && \
-    echo "extension=amqp.so" >> /etc/php/7.1/fpm/php.ini && \
-    echo "extension=amqp.so" >> /etc/php/7.1/cli/php.ini
+ADD conf/opcache.ini /etc/php/7.1/fpm/conf.d/10-opcache.ini
+ADD conf/opcache.ini /etc/php/7.1/cli/conf.d/10-opcache.ini
 
-# Add Scripts
+# Enable AMPQ plugin
+RUN echo "extension=amqp.so" >> /etc/php/7.1/cli/conf.d/20-amqp.ini && \
+    echo "extension=amqp.so" >> /etc/php/7.1/fpm/conf.d/20-amqp.ini
+
+# Add errors and scripts
+ADD errors/ /var/www/errors
 ADD scripts/start.sh /start.sh
 ADD scripts/setup.sh /setup.sh
 RUN chmod 755 /start.sh && \
     chmod 755 /setup.sh
 
-# copy in code and errors
-# ADD src/ /var/www/html/
-ADD errors/ /var/www/errors
-
+# Add composer
 RUN composer_hash=$(wget -q -O - https://composer.github.io/installer.sig) && \
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php -r "if (hash_file('SHA384', 'composer-setup.php') === '${composer_hash}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
@@ -194,5 +116,4 @@ RUN composer_hash=$(wget -q -O - https://composer.github.io/installer.sig) && \
     php -r "unlink('composer-setup.php');"
 
 EXPOSE 80
-
 CMD ["/start.sh"]
