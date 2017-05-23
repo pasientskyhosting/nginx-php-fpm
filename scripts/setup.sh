@@ -116,7 +116,7 @@ monolog:
     handlers:
         main:
             type: stream
-            path:  "/proc/self/fd/2"
+            path:  "/tmp/logpipe"
             level: error
 EOF
 
