@@ -79,8 +79,7 @@ EOF
         cd /var/www/html
         rm -rf /var/www/html/var
         mkdir -p /var/www/html/var
-        /usr/bin/composer run-
-        script build-parameters --no-interaction
+        /usr/bin/composer run-script build-parameters --no-interaction
 
         if [ -f /var/www/html/bin/console ]; then
             /var/www/html/bin/console cache:clear --no-warmup --env=prod
