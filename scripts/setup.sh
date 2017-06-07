@@ -9,34 +9,8 @@ echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
 if [ ! -z "$NEW_RELIC_LICENSE_KEY" ]; then
     export NR_INSTALL_KEY=$NEW_RELIC_LICENSE_KEY
     newrelic-install install || exit 1
-    #nrsysmond-config --set license_key=${NEW_RELIC_LICENSE_KEY} || exit 1
-    #echo -e "\n[program:nrsysmond]\ncommand=nrsysmond -c /etc/newrelic/nrsysmond.cfg -l /dev/stdout -f\nautostart=true\nautorestart=true\npriority=0\nstdout_events_enabled=true\nstderr_events_enabled=true\nstdout_logfile=/dev/stdout\nstdout_logfile_maxbytes=0\nstderr_logfile=/dev/stderr\nstderr_logfile_maxbytes=0" >> /etc/supervisord.conf
-
-    if [ -f /etc/php/7.1/fpm/conf.d/20-newrelic.ini ]; then
-        rm -rf /etc/php/7.1/fpm/conf.d/20-newrelic.ini
-    fi
-    if [ -f /etc/php/7.1/cli/conf.d/20-newrelic.ini ]; then
-        rm -rf /etc/php/7.1/cli/conf.d/20-newrelic.ini
-    fi
-
-    sed -i "s|newrelic.appname = \"PHP Application\"|newrelic.appname = \"$PS_DEPLOYMENT_DATACENTER-cluster1-$PS_ENVIRONMENT-$PS_APPLICATION\"|" /etc/php/7.1/fpm/conf.d/newrelic.ini
-    sed -i "s|newrelic.appname = \"PHP Application\"|newrelic.appname = \"$PS_DEPLOYMENT_DATACENTER-cluster1-$PS_ENVIRONMENT-$PS_APPLICATION\"|" /etc/php/7.1/cli/conf.d/newrelic.ini
-
+    sed -i "s|newrelic.appname = \"PHP Application\"|newrelic.appname = \"$PS_DEPLOYMENT_DATACENTER-cluster1-$PS_ENVIRONMENT-$PS_APPLICATION\"|" /usr/local/etc/php/conf.d/newrelic.ini
     unset NEW_RELIC_LICENSE_KEY
-else
-    if [ -f /etc/php/7.1/fpm/conf.d/20-newrelic.ini ]; then
-        rm -rf /etc/php/7.1/fpm/conf.d/20-newrelic.ini
-    fi
-    if [ -f /etc/php/7.1/cli/conf.d/20-newrelic.ini ]; then
-        rm -rf /etc/php/7.1/cli/conf.d/20-newrelic.ini
-    fi
-    if [ -f /etc/php/7.1/fpm/conf.d/newrelic.ini ]; then
-        rm -rf /etc/php/7.1/fpm/conf.d/newrelic.ini
-    fi
-    if [ -f /etc/php/7.1/cli/conf.d/newrelic.ini ]; then
-        rm -rf /etc/php/7.1/cli/conf.d/newrelic.ini
-    fi
-    /etc/init.d/newrelic-daemon stop
 fi
 
 if [ -d "/adaptions" ]; then
