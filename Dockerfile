@@ -84,7 +84,7 @@ ADD conf/www3.conf /usr/local/etc/php-fpm.d/www3.conf
 ADD conf/php.ini /usr/local/etc/php/php.ini
 
 # Configure php opcode cache
-RUN echo -e "opcache.enable=1\nopcache.enable_cli=1\nopcache.consistency_checks=0\nopcache.file_cache=/tmp\nopcache.file_cache_consistency_checks=0\nopcache.validate_timestamps=0\nopcache.max_accelerated_files=32531\nopcache.memory_consumption=512\nopcache.interned_strings_buffer=8\nopcache.revalidate_freq=60\nopcache.fast_shutdown=0\nopcache.error_log=/proc/self/fd/2" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
+RUN echo "opcache.enable=1\nopcache.enable_cli=1\nopcache.consistency_checks=0\nopcache.file_cache=/tmp\nopcache.file_cache_consistency_checks=0\nopcache.validate_timestamps=0\nopcache.max_accelerated_files=32531\nopcache.memory_consumption=512\nopcache.interned_strings_buffer=8\nopcache.revalidate_freq=60\nopcache.fast_shutdown=0\nopcache.error_log=/proc/self/fd/2" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 RUN echo "<?php var_dump(opcache_get_status(false)); phpinfo();" > /var/www/phpinfo.php
 
 # Add errors and scripts
