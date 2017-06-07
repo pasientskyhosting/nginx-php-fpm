@@ -9,8 +9,10 @@ echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
 if [ ! -z "$NEW_RELIC_LICENSE_KEY" ]; then
     export NR_INSTALL_KEY=$NEW_RELIC_LICENSE_KEY
     newrelic-install install || exit 1
-    sed -i "s|newrelic.appname = \"PHP Application\"|newrelic.appname = \"$PS_DEPLOYMENT_DATACENTER-cluster1-$PS_ENVIRONMENT-$PS_APPLICATION\"|" /usr/local/etc/php/conf.d/newrelic.ini
-    unset NEW_RELIC_LICENSE_KEY
+
+    echo "newrelic.appname = \"$PS_DEPLOYMENT_DATACENTER-cluster1-$PS_ENVIRONMENT-$PS_APPLICATION\"" >> /usr/local/etc/php/conf.d/newrelic.ini
+    echo "newrelic.daemon.logfile = \"/proc/self/fd/2\"" >> /usr/local/etc/php/conf.d/newrelic.ini
+    echo "newrelic.logfile = \"/proc/self/fd/2\"" >> /usr/local/etc/php/conf.d/newrelic.ini
 fi
 
 if [ -d "/adaptions" ]; then
