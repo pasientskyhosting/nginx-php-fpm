@@ -59,7 +59,7 @@ RUN apt-get update \
     supervisor \
     unzip \
     newrelic-php5 \
-    newrelic-sysmond \
+#    newrelic-sysmond \
     locales \
     && yes '' | pecl install amqp \
     && apt-get clean \
