@@ -76,7 +76,9 @@ ADD conf/nginx-site.conf /etc/nginx/sites-enabled/default.conf
 # tweak php-fpm
 RUN rm /usr/local/etc/php-fpm.d/*
 ADD conf/php-fpm.conf /usr/local/etc/php-fpm.d/php-fpm.conf
-ADD conf/www.conf /usr/local/etc/php-fpm.d/www.conf
+ADD conf/www1.conf /usr/local/etc/php-fpm.d/www1.conf
+ADD conf/www2.conf /usr/local/etc/php-fpm.d/www2.conf
+ADD conf/www3.conf /usr/local/etc/php-fpm.d/www3.conf
 
 # tweak php
 ADD conf/php.ini /usr/local/etc/php/php.ini
