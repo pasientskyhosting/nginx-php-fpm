@@ -1,9 +1,11 @@
 #!/bin/bash
-export USE_ZEND_ALLOC=0
 
 # Disable Strict Host checking for non interactive git clones
 mkdir -p -m 0700 /root/.ssh
 echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
+
+# Set podname for php
+sed -i "s|{{pool_name}}|$HOSTNAME|" /usr/local/etc/php-fpm.d/www.conf
 
 # Add new relic if key is present
 if [ ! -z "$NEW_RELIC_LICENSE_KEY" ]; then
