@@ -7,6 +7,9 @@ echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
 # Set podname for php
 sed -i "s|{{pool_name}}|$HOSTNAME|" /usr/local/etc/php-fpm.d/www.conf
 
+# Fix DNS timeout
+echo "options timeout:1 attempts:1 rotate" >> /etc/resolv.conf
+
 # Add new relic if key is present
 if [ ! -z "$NEW_RELIC_LICENSE_KEY" ]; then
     export NR_INSTALL_KEY=$NEW_RELIC_LICENSE_KEY

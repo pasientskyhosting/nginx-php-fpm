@@ -14,51 +14,77 @@ RUN echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/
 
 RUN apt-get update \
     && apt-get install -y -q --no-install-recommends --no-install-suggests \
-    wget \
-    vim \
-    host \
-    net-tools \
-    tzdata \
-    ca-certificates \
-    supervisor \
-    nginx \
-    libmcrypt-dev \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libmcrypt-dev \
-    libpng12-dev \
-    libcurl4-openssl-dev \
-    libmagickwand-dev \
-    libmagickcore-dev \
-    libssl-dev \
-    librabbitmq-dev \
-    zlib1g-dev \
-    libicu-dev \
-    g++ \
-    make \
-    unzip \
-    locales \
-    pkg-config \
-    newrelic-php5
+        wget \
+        host \
+        net-tools \
+        tzdata \
+        ca-certificates \
+        supervisor \
+        nginx \
+        libmcrypt-dev \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng12-dev \
+        libcurl4-openssl-dev \
+        libmagickwand-dev \
+        libmagickcore-dev \
+        libssl-dev \
+        librabbitmq-dev \
+        zlib1g-dev \
+        libicu-dev \
+        g++ \
+        localepurge \
+        make \
+        unzip \
+        locales \
+        pkg-config \
+        newrelic-php5 \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install -j$(nproc) iconv mcrypt \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install -j$(nproc) pdo_mysql json bcmath intl opcache mbstring xml zip \
     && docker-php-ext-configure pcntl \
-    && docker-php-ext-install -j$(nproc) pcntl
-
-RUN pecl install redis \
-    && pecl install amqp \
-    && pecl install igbinary \
-    && pecl install mongodb \
-    && pecl install imagick \
-    && docker-php-ext-enable redis amqp igbinary imagick mongodb
+    && docker-php-ext-install -j$(nproc) \
+         iconv \
+         mcrypt \
+         gd \
+         pdo_mysql \
+         json \
+         bcmath \
+         intl \
+         opcache \
+         mbstring \
+         xml \
+         zip \
+         pcntl \
+    && pecl install \
+         redis \
+         amqp \
+         igbinary \
+         mongodb \
+         imagick \
+    && docker-php-ext-enable \
+         redis \
+         amqp \
+         igbinary \
+         imagick \
+         mongodb
 
 # Install no locale
-RUN sed -i 's/# nb_NO.UTF-8 UTF-8/nb_NO.UTF-8 UTF-8/' /etc/locale.gen && \
-    locale-gen nb_NO.UTF-8
+RUN sed -i 's/# nb_NO.UTF-8 UTF-8/nb_NO.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen nb_NO.UTF-8
+
+RUN sed -i "s|USE_DPKG|#USE_DPKG|" /etc/locale.nopurge && localepurge
+
+RUN apt-get purge -y \
+      g++ \
+      make \
+      pkg-config \
+      localepurge \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/*
 
 RUN mkdir -p /etc/nginx && \
     mkdir -p /var/www/app && \
