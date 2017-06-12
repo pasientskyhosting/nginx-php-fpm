@@ -128,7 +128,9 @@ RUN composer_hash=$(wget -q -O - https://composer.github.io/installer.sig) && \
     php -r "unlink('composer-setup.php');"
 
 # Add tini
-ADD https://github.com/krallin/tini/releases/download/v0.14.0/tini-static /tini
+ENV TINI_VERSION v0.14.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
 
 EXPOSE 80
 
