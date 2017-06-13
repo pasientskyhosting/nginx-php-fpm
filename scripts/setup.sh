@@ -18,6 +18,7 @@ if [ ! -z "$NEW_RELIC_LICENSE_KEY" ]; then
     echo "newrelic.appname = \"$PS_DEPLOYMENT_DATACENTER-cluster1-$PS_ENVIRONMENT-$PS_APPLICATION\"" >> /usr/local/etc/php/conf.d/newrelic.ini
     echo "newrelic.daemon.logfile = \"/proc/self/fd/2\"" >> /usr/local/etc/php/conf.d/newrelic.ini
     echo "newrelic.logfile = \"/proc/self/fd/2\"" >> /usr/local/etc/php/conf.d/newrelic.ini
+    echo "newrelic.label = \"location:"$PS_DEPLOYMENT_DATACENTER";environment:"$PS_ENVIRONMENT"\"" >> /usr/local/etc/php/conf.d/newrelic.ini
 fi
 
 if [ -d "/adaptions" ]; then
