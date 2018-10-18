@@ -40,6 +40,7 @@ RUN apt-get update \
         locales \
         pkg-config \
         newrelic-php5 \
+        git \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
