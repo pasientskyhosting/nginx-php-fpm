@@ -1,4 +1,4 @@
-FROM php:7.1.27-fpm
+FROM php:7.3.3-fpm
 
 MAINTAINER Andreas Krüger <ak@patientsky.com>
 
@@ -41,6 +41,7 @@ RUN apt-get update \
         librabbitmq-dev \
         zlib1g-dev \
         libicu-dev \
+        libzip-dev \
         g++ \
         localepurge \
         make \
@@ -52,12 +53,14 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
+RUN pecl install mcrypt-1.0.2
+
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-configure intl \
     && docker-php-ext-configure pcntl \
     && docker-php-ext-install -j$(nproc) \
          iconv \
-         mcrypt \
+#         mcrypt \
          gd \
          pdo_mysql \
          json \
