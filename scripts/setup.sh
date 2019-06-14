@@ -13,19 +13,20 @@ echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
 
 # Set podname for php
 sed -i "s|{{pool_name}}|$HOSTNAME|" /usr/local/etc/php-fpm.d/www.conf
-
-# Fix DNS timeout
-echo "options timeout:1 attempts:1 rotate" >> /etc/resolv.conf
+sed -i "s|{{pool_name}}|$HOSTNAME|" /usr/local/etc/php-fpm.d/www1.conf
+sed -i "s|{{pool_name}}|$HOSTNAME|" /usr/local/etc/php-fpm.d/www2.conf
+sed -i "s|{{pool_name}}|$HOSTNAME|" /usr/local/etc/php-fpm.d/www3.conf
 
 # Add new relic if key is present
 if [ ! -z "$NEW_RELIC_LICENSE_KEY" ]; then
     export NR_INSTALL_KEY=$NEW_RELIC_LICENSE_KEY
     newrelic-install install || exit 1
 
-    echo "newrelic.appname = \"$PS_DEPLOYMENT_DATACENTER-cluster1-$PS_ENVIRONMENT-$PS_APPLICATION\"" >> /usr/local/etc/php/conf.d/newrelic.ini
+    echo "newrelic.appname = \"$PS_ENVIRONMENT-$PS_APPLICATION\"" >> /usr/local/etc/php/conf.d/newrelic.ini
     echo "newrelic.daemon.logfile = \"/proc/self/fd/2\"" >> /usr/local/etc/php/conf.d/newrelic.ini
     echo "newrelic.logfile = \"/proc/self/fd/2\"" >> /usr/local/etc/php/conf.d/newrelic.ini
-    echo "newrelic.label = \"location:"$PS_DEPLOYMENT_DATACENTER";environment:"$PS_ENVIRONMENT"\"" >> /usr/local/etc/php/conf.d/newrelic.ini
+    echo "newrelic.distributed_tracing_enabled = true" >> /usr/local/etc/php/conf.d/newrelic.ini
+    echo "newrelic.labels = \"location:"$PS_DEPLOYMENT_DATACENTER";environment:"$PS_ENVIRONMENT"\"" >> /usr/local/etc/php/conf.d/newrelic.ini
 fi
 
 if [ -d "/adaptions" ]; then
@@ -80,7 +81,7 @@ EOF
         mkdir -p /var/www/html/var
         /usr/bin/composer run-script build-parameters --no-interaction
         checkForFail
-        
+
         if [ -f /var/www/html/bin/console ]; then
             /var/www/html/bin/console cache:clear --no-warmup --env=prod
             checkForFail
