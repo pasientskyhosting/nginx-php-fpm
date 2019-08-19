@@ -1,4 +1,4 @@
-FROM php:7.1.30-fpm
+FROM php:7.1.31-fpm
 
 MAINTAINER Andreas Krüger <ak@patientsky.com>
 
