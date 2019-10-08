@@ -1,6 +1,6 @@
-FROM php:7.1.31-fpm
+FROM php:7.1.32-fpm
 
-MAINTAINER Andreas Krüger <ak@patientsky.com>
+LABEL maintainer "Andreas Krüger <ak@patientsky.com>"
 
 ENV composer_hash 669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410
 ENV DEBIAN_FRONTEND=noninteractive
