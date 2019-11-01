@@ -29,7 +29,11 @@ RUN apt-get update && \
         unzip \
         locales \
         pkg-config \
-    && wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini -O /tini \
+        libjemalloc-dev
+
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so
+
+RUN wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini -O /tini \
     && chmod +x /tini \
     && curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && curl -fsSL https://download.newrelic.com/548C16BF.gpg | apt-key add - \
