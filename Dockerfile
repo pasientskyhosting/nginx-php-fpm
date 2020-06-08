@@ -1,4 +1,4 @@
-FROM php:7.1.32-fpm
+FROM php:7.4.6-fpm
 
 LABEL maintainer "Andreas Krüger <ak@patientsky.com>"
 
@@ -10,26 +10,27 @@ ENV TINI_VERSION v0.18.0
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y -q --install-recommends --no-install-suggests \
-        dirmngr \
-        gnupg2 \
-        wget \
-        host \
-        net-tools \
-        tzdata \
-        ca-certificates \
-        supervisor \
-        libcurl4-openssl-dev \
-        libssl-dev \
-        librabbitmq-dev \
-        libxml2-dev \
-        zlib1g-dev \
-        libicu-dev \
-        g++ \
-        make \
-        unzip \
-        locales \
-        pkg-config \
-        libjemalloc-dev
+    dirmngr \
+    gnupg2 \
+    wget \
+    host \
+    net-tools \
+    tzdata \
+    libzip-dev \
+    ca-certificates \
+    supervisor \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    librabbitmq-dev \
+    libxml2-dev \
+    zlib1g-dev \
+    libicu-dev \
+    g++ \
+    make \
+    unzip \
+    locales \
+    pkg-config \
+    libjemalloc-dev
 
 ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so
 
@@ -47,29 +48,29 @@ RUN wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini 
     && rm composer-setup.php \
     && apt-get update \
     && apt-get install -y -q --no-install-recommends --no-install-suggests \
-        nginx \
-        newrelic-php5 \
+    nginx \
+    newrelic-php5 \
     && docker-php-ext-configure intl \
     && docker-php-ext-configure pcntl \
     && docker-php-ext-install -j$(nproc) \
-         iconv \
-         pdo_mysql \
-         json \
-         bcmath \
-         intl \
-         opcache \
-         mbstring \
-         xml \
-         zip \
-         pcntl \
+    iconv \
+    pdo_mysql \
+    json \
+    bcmath \
+    intl \
+    opcache \
+    # mbstring \
+    xml \
+    zip \
+    pcntl \
     && pecl install \
-         redis \
-         amqp \
-         igbinary \
+    redis \
+    amqp \
+    igbinary \
     && docker-php-ext-enable \
-         redis \
-         amqp \
-         igbinary \
+    redis \
+    amqp \
+    igbinary \
     && cd / && mkdir -p /etc/nginx && \
     mkdir -p /var/www/app && \
     mkdir -p /run/nginx && \
@@ -85,20 +86,20 @@ RUN wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini 
     && sed -i 's/# nb_NO.UTF-8 UTF-8/nb_NO.UTF-8 UTF-8/' /etc/locale.gen \
     && locale-gen nb_NO.UTF-8 \
     && apt-get purge -y \
-      g++ \
-      make \
-      pkg-config \
-      dirmngr \
-      gnupg2 \
+    g++ \
+    make \
+    pkg-config \
+    dirmngr \
+    gnupg2 \
     && apt-get autoremove -y \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf \
-       /usr/include/php \
-       /usr/lib/php/build \
-       /tmp/* \
-       /root/.composer \
-       /var/cache/apk/* \
+    /usr/include/php \
+    /usr/lib/php/build \
+    /tmp/* \
+    /root/.composer \
+    /var/cache/apk/* \
     && docker-php-source delete
 
 # Imagick and gd
