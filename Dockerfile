@@ -1,4 +1,4 @@
-FROM php:7.4.6-fpm
+FROM php:7.4.9-fpm
 
 LABEL maintainer "Andreas Krüger <ak@patientsky.com>"
 
