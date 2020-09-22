@@ -1,4 +1,4 @@
-FROM php:7.1.32-fpm
+FROM php:7.1.33-fpm
 
 LABEL maintainer "Andreas Krüger <ak@patientsky.com>"
 
@@ -49,6 +49,7 @@ RUN wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini 
     && apt-get install -y -q --no-install-recommends --no-install-suggests \
         nginx \
         newrelic-php5 \
+        gdb \
     && docker-php-ext-configure intl \
     && docker-php-ext-configure pcntl \
     && docker-php-ext-install -j$(nproc) \

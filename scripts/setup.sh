@@ -27,6 +27,9 @@ if [ ! -z "$NEW_RELIC_LICENSE_KEY" ]; then
     echo "newrelic.logfile = \"/proc/self/fd/2\"" >> /usr/local/etc/php/conf.d/newrelic.ini
     echo "newrelic.distributed_tracing_enabled = true" >> /usr/local/etc/php/conf.d/newrelic.ini
     echo "newrelic.labels = \"location:"$PS_DEPLOYMENT_DATACENTER";environment:"$PS_ENVIRONMENT"\"" >> /usr/local/etc/php/conf.d/newrelic.ini
+else
+    echo "NEW_RELIC_LICENSE_KEY was not provided. Removing newrelic-php5 to disable newrelic"
+    apt-get purge -qy newrelic-php5
 fi
 
 if [ -d "/adaptions" ]; then
