@@ -6,6 +6,10 @@ ENV composer_hash 669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 ENV TINI_VERSION v0.18.0
+ENV PHP_FPM_EXPORTER_VERSION 1.1.1
+ENV PHP_FPM_WEB_LISTEN_ADDRESS :8081
+ENV PHP_FPM_WEB_TELEMETRY_PATH /prometheus
+ENV PHP_FPM_SCRAPE_URI tcp://127.0.0.1:9001/status
 
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -36,6 +40,8 @@ ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so
 
 RUN wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini -O /tini \
     && chmod +x /tini \
+    && wget https://github.com/hipages/php-fpm_exporter/releases/download/v${PHP_FPM_EXPORTER_VERSION}/php-fpm_exporter_${PHP_FPM_EXPORTER_VERSION}_linux_amd64 -O /php-fpm_exporter \
+    && chmod +x /php-fpm_exporter \
     && curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && curl -fsSL https://download.newrelic.com/548C16BF.gpg | apt-key add - \
     && echo "deb http://nginx.org/packages/mainline/debian/ stretch nginx" > /etc/apt/sources.list.d/nginx.list \
