@@ -89,8 +89,8 @@ RUN wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini 
     echo "<?php var_dump(opcache_get_status(false)); phpinfo();" > /var/www/phpinfo.php \
     && rm /usr/local/etc/php-fpm.d/* \
     && echo "opcache.enable=1\nopcache.enable_cli=1\nopcache.consistency_checks=0\nopcache.file_cache=/tmp\nopcache.file_cache_consistency_checks=0\nopcache.validate_timestamps=0\nopcache.max_accelerated_files=32531\nopcache.memory_consumption=512\nopcache.interned_strings_buffer=8\nopcache.revalidate_freq=60\nopcache.fast_shutdown=0\nopcache.error_log=/proc/self/fd/2" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini \
-    && sed -i 's/# nb_NO.UTF-8 UTF-8/nb_NO.UTF-8 UTF-8/' /etc/locale.gen \
-    && locale-gen nb_NO.UTF-8 \
+    && cp /usr/share/i18n/SUPPORTED /etc/locale.gen \
+    && dpkg-reconfigure --frontend=noninteractive locales \
     && apt-get purge -y \
     g++ \
     make \
