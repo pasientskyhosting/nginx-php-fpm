@@ -49,7 +49,7 @@ RUN wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini 
     && composer_hash=$(wget -q -O - https://composer.github.io/installer.sig) \
     && wget https://getcomposer.org/installer -O composer-setup.php \
     && php -r "if (hash_file('SHA384', 'composer-setup.php') === '${composer_hash}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
-    && php composer-setup.php --install-dir=/usr/bin --filename=composer \
+    && php composer-setup.php --install-dir=/usr/bin --filename=composer --version=1.10.17 \
     && rm composer-setup.php \
     && apt-get update \
     && apt-get install -y -q --no-install-recommends --no-install-suggests \
